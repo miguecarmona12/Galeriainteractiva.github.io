@@ -1,3 +1,8 @@
+// Añadir tabindex dinámicamente
+document.querySelectorAll('.thumbnail').forEach(img => {
+    img.setAttribute('tabindex', '0');
+});
+
 // Función para actualizar la imagen y el texto del contenedor
 function upDate(previewPic) {
     console.log('upDate triggered');
@@ -22,11 +27,24 @@ function unDo() {
     document.getElementById('image').style.backgroundImage = 'url(\'\')';
 }
 
+// Función para restaurar el fondo de la imagen grande con URL vacía
+function resetBackground() {
+    document.getElementById('image').style.backgroundImage = 'url(\'\')';
+}
+
 // Obtener todas las imágenes con la clase "thumbnail"
 const thumbnails = document.querySelectorAll('.thumbnail');
 
 // Añadir los manejadores de eventos a cada imagen
 thumbnails.forEach(img => {
     img.addEventListener('mouseover', () => upDate(img));
-    img.addEventListener('mouseout', unDo);
+    img.addEventListener('mouseout', () => {
+        unDo();
+        resetBackground(); // Actualizar fondo con URL vacía al salir
+    });
+    img.addEventListener('focus', () => upDate(img)); // Actualizar imagen al enfocar
+    img.addEventListener('blur', () => {
+        unDo(); // Restaurar al quitar el foco
+        resetBackground(); // Actualizar fondo con URL vacía al desenfocar
+    });
 });
